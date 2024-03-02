@@ -1,10 +1,11 @@
 import socket
 import threading
 from os import path
+from colorama import Fore
 
 clients_dict = {}
 host = "127.0.0.1"
-port = 55555
+port = 9998
 if path.exists('ChatLogs.txt'):
     pass
 else:
@@ -20,20 +21,21 @@ else:
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
 server.listen()
-print("Listening for connections...")
+print(Fore.GREEN + "Listening for connections...")
 
 
 def handle(client):
     while True:
         try:
-            message = client.recv(1024)
-            if message != b'':
-                chat = f"{clients_dict[client]} : {message.decode("ascii")}"
-                print(chat)
-                broadcast(chat)
-                write_log(chat)
-                chat = b''
+            he, message = clients_dict[client], client.recv(1024)
+            msg = message.decode("ascii")
+            write_log(f"{he} : {msg}")
+            if message:
+                chat = Fore.BLUE + f"{he} : " + Fore.RED + f"{msg}"
+                broadcast(chat, client)
         except:
+            broadcast(Fore.RED + f"\n{clients_dict[client]} left the chat", client)
+            del clients_dict[client]
             client.close()
             break
 
@@ -41,11 +43,14 @@ def handle(client):
 def receive():
     while True:
         client, address = server.accept()
-        print(address)
-        print("Connected with {}".format(str(address)))
         name = client.recv(1024).decode("ascii")
-        ip = str(address).split(",")[0][2:-1]
+        if name == "admin":
+            client.send("KEY".encode("ascii"))
+            key = client.recv(1024)
+            if key == "admin":
+                client.send("Log in successful".encode("ascii"))
         write_client(name, client)
+        broadcast(Fore.GREEN + f"\n{clients_dict[client]} Joined the Chat", client)
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 
@@ -65,9 +70,14 @@ def write_client(name, connection):
         file.close()
 
 
-def broadcast(message):
+def broadcast(message, not_to):
+    print(message)
     for people in clients_dict.keys():
-        people.send(message.encode("ascii"))
+        if people != not_to:
+            try:
+                people.send(message.encode("ascii"))
+            except socket.timeout:
+                print(Fore.RED + f"{people} left the chat")
 
 
 def write_log(log):
