@@ -10,18 +10,19 @@ This project is a simple TCP chat room implemented in Python. It allows multiple
 - **Basic User Interface**: Although the focus of the project is on functionality rather than aesthetics, a simple command-line interface (CLI) is provided for users to interact with the chat room.
 
 ## Installation
+
 To use this project, follow these steps:
 
 1. Clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/your_username/tcp-chat-room.git
+    git clone https://github.com/mudassir-javed/Chat-Room.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd tcp-chat-room
+    cd Chat-Room
     ```
 
 3. Install the required dependencies using pip:
@@ -33,6 +34,8 @@ To use this project, follow these steps:
    This will install all the necessary Python packages listed in the `requirements.txt` file.
 
 4. Once the dependencies are installed, you can proceed to run the server and connect clients as described in the [Usage](#usage) section.
+
+
 
 
 ## Usage
