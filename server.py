@@ -5,6 +5,7 @@ import sys
 from colorama import Fore
 
 clients_dict = {}
+exit_event = threading.Event()
 
 
 def handle(client):
@@ -16,21 +17,31 @@ def handle(client):
 
             broadcast(f"{name}: {message}", client)
         except ConnectionResetError:
-            broadcast(Fore.RED + f"\n{clients_dict[client]} left the chat", client)
-            del clients_dict[client]
-            client.close()
+            # Handle client disconnect
+            handle_disconnect(client)
             break
 
 
+def handle_disconnect(client):
+    if client in clients_dict:
+        name = clients_dict[client]
+        del clients_dict[client]
+        client.close()
+        broadcast(Fore.RED + f"\n{name} left the chat", client)
+
+
 def receive():
-    while True:
-        client, address = server.accept()
-        name = client.recv(1024).decode("ascii")
-        clients_dict[client] = name
-        write_client(name, client)
-        broadcast(Fore.GREEN + f"\n{name} joined the chat", client)
-        thread = threading.Thread(target=handle, args=(client,))
-        thread.start()
+    while not exit_event.is_set():
+        try:
+            client, address = server.accept()
+            name = client.recv(1024).decode("ascii")
+            clients_dict[client] = name
+            write_client(name, client)
+            broadcast(Fore.GREEN + f"\n{name} joined the chat", client)
+            thread = threading.Thread(target=handle, args=(client,))
+            thread.start()
+        except socket.error as e:
+            print(f"Error accepting client connection: {e}")
 
 
 def broadcast(message, not_to):
@@ -39,8 +50,9 @@ def broadcast(message, not_to):
         if client_socket != not_to:
             try:
                 client_socket.send(message.encode("ascii"))
-            except socket.timeout:
-                print(Fore.RED + f"{client_socket} left the chat")
+            except socket.error as e:
+                print(f"Error broadcasting message to client: {e}")
+                handle_disconnect(client_socket)
 
 
 def write_client(name, connection):
@@ -61,18 +73,17 @@ def write_log(log):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python client.py <server_ip> <port>")
-        sys.exit(1)
-
-    HOST = sys.argv[1]
-    PORT = int(sys.argv[2])
-
     if not path.exists('ChatLogs.txt'):
         open("ChatLogs.txt", "w").close()
 
     if not path.exists('Clients.txt'):
         open("Clients.txt", "w").close()
+    if len(sys.argv) != 3:
+        print("Usage: python server.py <server_ip> <port>")
+        sys.exit(1)
+
+    HOST = sys.argv[1]
+    PORT = int(sys.argv[2])
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -87,5 +98,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         for client_socket in clients_dict.keys():
             client_socket.close()
+        server.close()
         print("You pressed Ctrl + C, program closed")
         sys.exit()
