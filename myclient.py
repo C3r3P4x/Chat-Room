@@ -1,9 +1,14 @@
 import socket
 import threading
 from colorama import Fore
+import sys
 
-host = "127.0.0.1"
-port = 9998
+if len(sys.argv) != 3:
+    print("Usage: python myclient.py <server_ip> <port>")
+    sys.exit(1)
+
+server_ip = sys.argv[1]
+port = int(sys.argv[2])
 print(Fore.GREEN + "use alphabets, letters and underscores only " +Fore.RED + " (max length 14) \n" +Fore.RESET +"Enter your name: ")
 while True:
     name = input()

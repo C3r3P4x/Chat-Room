@@ -37,8 +37,35 @@ To use this project, follow these steps:
 
 
 
-
 ## Usage
+
 1. **Server Setup**: Run the server script (`server.py`) to initialize the chat room server.
+
    ```bash
    python server.py
+   ```
+
+   This command will start the server and prepare it to accept incoming connections from clients.
+
+2. **Client Connection**: Once the server is running, you can connect to it using the client script (`myclient.py`). Multiple instances of the client script can be run to create multiple clients joining the server.
+
+   ```bash
+   python myclient.py <server_ip> <port>
+   ```
+
+   - Replace `<server_ip>` with the IP address of the server.
+   - Replace `<port>` with the port number on which the server is running.
+
+   Each instance of the client script represents a unique client connecting to the chat room.
+
+3. **Chatting**: Once connected, users can send messages to the chat room by typing them into the CLI interface and pressing Enter. Messages will be broadcasted to all connected clients in real-time.
+
+4. **Exiting**: To exit the chat room, users can type a predefined exit command (e.g., `/exit`) or simply close the client application.
+
+By following these steps, you can effectively set up and use the TCP chat room, connecting multiple clients to the server and engaging in real-time communication.
+
+## Credits
+
+This project was created by [mudassir-javed](https://github.com/mudassir-javed).
+
+If you find this project useful, consider giving it a star on GitHub and sharing it with others.

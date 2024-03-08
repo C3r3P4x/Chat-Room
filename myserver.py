@@ -1,13 +1,20 @@
+from colorama import Fore
+
 import socket
 import threading
-from colorama import Fore
 from os import path
+import sys
 
-admin_id = "admin"
-admin_key = "admin"
+if len(sys.argv) != 3:
+    print("Usage: python myclient.py <server_ip> <port>")
+    sys.exit(1)
+
+host = sys.argv[1]
+port = int(sys.argv[2])
+
+
 clients_dict = {}
-host = "127.0.0.1"
-port = 9998
+
 
 if not path.exists('ChatLogs.txt'):
     open("ChatLogs.txt", "w").close()
@@ -18,6 +25,7 @@ if not path.exists('Clients.txt'):
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
+
 server.listen()
 color = [Fore.RED, Fore.GREEN, Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.WHITE, Fore.MAGENTA,
          Fore.CYAN, Fore.YELLOW, Fore.LIGHTRED_EX]
