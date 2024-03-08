@@ -37,7 +37,7 @@ def write():
     while True:
         message = input().encode("ascii")
         if message == "exit":
-            exit()
+            sys.exit()
         try:
             client.send(message)
         except ConnectionResetError:

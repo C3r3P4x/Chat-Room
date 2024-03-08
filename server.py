@@ -88,4 +88,4 @@ if __name__ == "__main__":
         for client_socket in clients_dict.keys():
             client_socket.close()
         print("You pressed Ctrl + C, program closed")
-        exit()
+        sys.exit()
