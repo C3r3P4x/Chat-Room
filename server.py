@@ -4,9 +4,6 @@ from os import path
 import sys
 from colorama import Fore
 
-HOST = '127.0.0.1'
-PORT = 8080
-
 clients_dict = {}
 
 
@@ -64,12 +61,12 @@ def write_log(log):
 
 
 if __name__ == "__main__":
-    #if len(sys.argv) != 3:
-    #    print("Usage: python client.py <server_ip> <port>")
-    #   sys.exit(1)
+    if len(sys.argv) != 3:
+        print("Usage: python client.py <server_ip> <port>")
+        sys.exit(1)
 
-    #HOST = sys.argv[1]
-    #PORT = int(sys.argv[2])
+    HOST = sys.argv[1]
+    PORT = int(sys.argv[2])
 
     if not path.exists('ChatLogs.txt'):
         open("ChatLogs.txt", "w").close()

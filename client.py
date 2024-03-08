@@ -3,16 +3,14 @@ import threading
 from colorama import Fore
 import sys
 
-#if len(sys.argv) != 3:
-#    print("Usage: python server.py <server_ip> <port>")
-#    sys.exit(1)
+if len(sys.argv) != 3:
+    print("Usage: python server.py <server_ip> <port>")
+    sys.exit(1)
 
-#host = sys.argv[1]
-#port = int(sys.argv[2])
-HOST = '127.0.0.1'
-PORT = 8080
-print(
-    Fore.GREEN + "Use alphabets, letters, and underscores only " + Fore.RED + "(max length 14)\n" + Fore.RESET + "Enter your name: ")
+HOST = sys.argv[1]
+PORT = int(sys.argv[2])
+
+print(Fore.GREEN + "Use alphabets, letters, and underscores only " + Fore.RED + "(max length 14)\n" + Fore.RESET + "Enter your name: ")
 while True:
     name = input()
     count = 0
