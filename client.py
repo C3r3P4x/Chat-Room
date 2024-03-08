@@ -3,14 +3,16 @@ import threading
 from colorama import Fore
 import sys
 
-if len(sys.argv) != 3:
-    print("Usage: python server.py <server_ip> <port>")
-    sys.exit(1)
+#if len(sys.argv) != 3:
+#    print("Usage: python server.py <server_ip> <port>")
+#    sys.exit(1)
 
-host = sys.argv[1]
-port = int(sys.argv[2])
+#host = sys.argv[1]
+#port = int(sys.argv[2])
+HOST = '127.0.0.1'
+PORT = 8080
 print(
-    Fore.GREEN + "use alphabets, letters and underscores only " + Fore.RED + " (max length 14) \n" + Fore.RESET + "Enter your name: ")
+    Fore.GREEN + "Use alphabets, letters, and underscores only " + Fore.RED + "(max length 14)\n" + Fore.RESET + "Enter your name: ")
 while True:
     name = input()
     count = 0
@@ -18,13 +20,14 @@ while True:
         if char.isdigit() or char.isalpha() or char == "_":
             count += 1
     if count == len(name):
-        print(Fore.LIGHTBLUE_EX + f"welcome, {name}")
+        print(Fore.LIGHTBLUE_EX + f"Welcome, {name}")
         break
     else:
-        print("Invalid name, try again\nEnter your name : ")
+        print("Invalid name, try again\nEnter your name: ")
+
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
-    client.connect((host, port))
+    client.connect((HOST, PORT))
 except ConnectionRefusedError:
     print(Fore.RED + "\nError 404! Server not found :(")
     quit()
@@ -53,6 +56,7 @@ def receive():
             print("Connection lost with the server.")
             client.close()
             break
+
 
 try:
     receive_thread = threading.Thread(target=receive)
