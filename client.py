@@ -48,10 +48,6 @@ except ConnectionResetError:
 def write():
     while True:
         message = input().encode("ascii")
-        if message.decode("ascii") == "exit":
-            client.close()
-            exit_event.set()
-            sys.exit()
         try:
             client.send(message)
         except ConnectionResetError:
