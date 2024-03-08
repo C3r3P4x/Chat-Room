@@ -40,12 +40,7 @@ def receive():
     while True:
         try:
             message = client.recv(1024).decode('ascii')
-            if message == "KEY":
-                key = input("Enter Password: ")
-                client.send(key.encode("ascii"))
-                print(client.recv(1024).decode("ascii"))
-            elif message:
-                print(message)
+            print(message)
         except ConnectionResetError:
             print("Connection lost with the server.")
             client.close()

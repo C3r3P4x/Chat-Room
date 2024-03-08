@@ -15,26 +15,22 @@ if not path.exists('ChatLogs.txt'):
 if not path.exists('Clients.txt'):
     open("Clients.txt", "w").close()
 
-if not path.exists('BannedClients.txt'):
-    open("BannedClients.txt", "w").close()
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
 server.listen()
-print(Fore.GREEN + "Listening for connections...")
+color = [Fore.RED, Fore.GREEN, Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.WHITE, Fore.MAGENTA,
+         Fore.CYAN, Fore.YELLOW, Fore.LIGHTRED_EX]
 
 
 def handle(client):
     while True:
         try:
             he, message = clients_dict[client], client.recv(1024)
-            if clients_dict[client] == admin_id:
-                admin(client, message)
-                continue
             msg = message.decode("ascii")
             write_log(f"{he} : {msg}")
             if message:
-                chat = Fore.MAGENTA + f"{he} : " + Fore.LIGHTBLUE_EX + f"{msg}"
+                chat = Fore.MAGENTA + f"{he} : " + color[len(clients_dict[client])%9] + f"{msg}"
                 broadcast(chat, client)
         except ConnectionResetError:
             broadcast(Fore.RED + f"\n{clients_dict[client]} left the chat", client)
@@ -48,58 +44,9 @@ def receive():
         client, address = server.accept()
         name = client.recv(1024).decode("ascii")
         write_client(name, client)
-
-        if name == admin_id:
-            client.send("KEY".encode("ascii"))
-            key = client.recv(1024).decode("ascii")
-            if key == admin_key:
-                client.send("Welcome to root dashboard\nAvailable functions: Kick or Ban\n".encode("ascii"))
-                continue
-            else:
-                client.send("Invalid key".encode("ascii"))
-                client.close()
-                continue
         broadcast(Fore.GREEN + f"\n{clients_dict[client]} Joined the Chat", client)
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
-
-
-def admin(root, msg):
-    while True:
-        blocks = msg.split()
-        if blocks[0] == "Kick" or "Ban":
-            if len(blocks) == 2:
-                if blocks[0] == "Kick":
-                    if blocks[1] in clients_dict.values():
-                        for sock, name in clients_dict.items():
-                            if name == blocks[1]:
-                                sock.send("You have been kicked out by the admin\n".encode("ascii"))
-                                broadcast(f"{clients_dict[root]} kicked out {blocks[1]}", sock)
-                                sock.close()
-                                del clients_dict[sock]
-                                msg = f"Admin kicked out {blocks[1]}"
-                                broadcast(msg, root)
-                                break
-                    else:
-                        root.send("Invalid username\n".encode("ascii"))
-                elif blocks[0] == "Ban":
-                    if blocks[1] in clients_dict.values():
-                        for sock, name in clients_dict.items():
-                            if name == blocks[1]:
-                                broadcast("You have been banned by the admin\n")
-                                sock.close()
-                                del clients_dict[sock]
-                                msg = f"Admin banned {blocks[1]}"
-                                broadcast(msg, root)
-                                with open("BannedClients.txt", "a") as banned_file:
-                                    write_ban(blocks[1])
-                                break
-                    else:
-                        root.send("Invalid username\n".encode("ascii"))
-            else:
-                root.send("Invalid command format. Please use 'Kick username' or 'Ban username'\n".encode("ascii"))
-        else:
-            broadcast(msg, root)
 
 
 def write_client(name, connection):
@@ -128,11 +75,6 @@ def broadcast(message, not_to):
 def write_log(log):
     with open("ChatLogs.txt", "a") as file:
         file.write(f"{log}\n")
-
-
-def write_ban(name):
-    with open("BannedClients.txt", "a") as file:
-        file.write(f"{name}\n")
 
 
 try:
