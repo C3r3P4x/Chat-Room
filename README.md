@@ -60,7 +60,6 @@ To use this project, follow these steps:
 
 3. **Chatting**: Once connected, users can send messages to the chat room by typing them into the CLI interface and pressing Enter. Messages will be broadcasted to all connected clients in real-time.
 
-4. **Exiting**: To exit the chat room, users can type a predefined exit command (e.g., `/exit`) or simply close the client application.
 
 By following these steps, you can effectively set up and use the TCP chat room, connecting multiple clients to the server and engaging in real-time communication.
 
