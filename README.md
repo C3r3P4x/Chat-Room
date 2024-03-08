@@ -42,15 +42,15 @@ To use this project, follow these steps:
 1. **Server Setup**: Run the server script (`server.py`) to initialize the chat room server.
 
    ```bash
-   python server.py
+   python server.py <server_ip> <port>
    ```
 
    This command will start the server and prepare it to accept incoming connections from clients.
 
-2. **Client Connection**: Once the server is running, you can connect to it using the client script (`myclient.py`). Multiple instances of the client script can be run to create multiple clients joining the server.
+2. **Client Connection**: Once the server is running, you can connect to it using the client script (`client.py`). Multiple instances of the client script can be run to create multiple clients joining the server.
 
    ```bash
-   python myclient.py <server_ip> <port>
+   python client.py <server_ip> <port>
    ```
 
    - Replace `<server_ip>` with the IP address of the server.

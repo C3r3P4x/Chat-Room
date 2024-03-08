@@ -54,9 +54,12 @@ def receive():
             client.close()
             break
 
+try:
+    receive_thread = threading.Thread(target=receive)
+    receive_thread.start()
 
-receive_thread = threading.Thread(target=receive)
-receive_thread.start()
-
-write_thread = threading.Thread(target=write)
-write_thread.start()
+    write_thread = threading.Thread(target=write)
+    write_thread.start()
+except KeyboardInterrupt:
+    print("Closing the program")
+    exit()

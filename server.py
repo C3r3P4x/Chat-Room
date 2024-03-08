@@ -4,6 +4,7 @@ import socket
 import threading
 from os import path
 import sys
+print("Server Established\n")
 
 if len(sys.argv) != 3:
     print("Usage: python client.py <server_ip> <port>")
@@ -12,16 +13,13 @@ if len(sys.argv) != 3:
 host = sys.argv[1]
 port = int(sys.argv[2])
 
-
 clients_dict = {}
-
 
 if not path.exists('ChatLogs.txt'):
     open("ChatLogs.txt", "w").close()
 
 if not path.exists('Clients.txt'):
     open("Clients.txt", "w").close()
-
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port))
@@ -30,6 +28,7 @@ server.listen()
 color = [Fore.RED, Fore.GREEN, Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.WHITE, Fore.MAGENTA,
          Fore.CYAN, Fore.YELLOW, Fore.LIGHTRED_EX]
 
+
 def handle(client):
     while True:
         try:
@@ -37,7 +36,7 @@ def handle(client):
             msg = message.decode("ascii")
             write_log(f"{he} : {msg}")
             if message:
-                chat = Fore.MAGENTA + f"{he} : " + color[len(clients_dict[client])%9] + f"{msg}"
+                chat = Fore.MAGENTA + f"{he} : " + color[len(clients_dict[client]) % 9] + f"{msg}"
                 broadcast(chat, client)
         except ConnectionResetError:
             broadcast(Fore.RED + f"\n{clients_dict[client]} left the chat", client)
